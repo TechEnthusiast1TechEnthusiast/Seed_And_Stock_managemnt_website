@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Book</title>
+    <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+    <header>
+        <h1>Stock Book</h1>
+        <nav>
+            <ul>
+                <li><a href="#import-stock">Import Stock</a></li>
+                <li><a href="#return-stock">Return Stock</a></li>
+                <li><a href="#stock-summary">Stock Summary</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="import-stock">
+        <h2>Import Stock</h2>
+        <form id="import-stock-form">
+            <label for="import-date">Date of Entry:</label>
+            <input type="date" id="import-date" name="import-date" required>
+
+            <label for="shop-name">Shop Name:</label>
+            <input type="text" id="shop-name" name="shop-name" required>
+
+            <label for="import-from">Imported From:</label>
+            <input type="text" id="import-from" name="import-from" required>
+
+            <label for="import-items">Items:</label>
+            <textarea id="import-items" name="import-items" required></textarea>
+
+            <button type="submit">Import Stock</button>
+        </form>
+    </section>
+
+    <section id="return-stock">
+        <h2>Return Stock</h2>
+        <form id="return-stock-form">
+            <label for="return-date">Date of Return:</label>
+            <input type="date" id="return-date" name="return-date" required>
+
+            <label for="return-shop-name">Shop Name:</label>
+            <input type="text" id="return-shop-name" name="return-shop-name" required>
+
+            <label for="return-to">Returned To:</label>
+            <input type="text" id="return-to" name="return-to" required>
+
+            <label for="return-items">Items:</label>
+            <textarea id="return-items" name="return-items" required></textarea>
+
+            <button type="submit">Return Stock</button>
+        </form>
+    </section>
+
+    <section id="stock-summary">
+        <h2>Stock Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Shop Name</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="stock-summary-body">
+                <!-- Stock summary rows will go here -->
+            </tbody>
+        </table>
+    </section>
+
+    <script src="script1.js"></script>
+</body>
+</html>
