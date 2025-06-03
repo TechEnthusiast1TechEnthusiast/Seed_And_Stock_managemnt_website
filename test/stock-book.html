@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Book</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+    <header class="bg-dark text-white text-center py-3">
+        <h1>Stock Book</h1>
+        <nav>
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#import-stock">Import Stock</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#return-stock">Return Stock</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#stock-summary">Stock Summary</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container my-4">
+        <section id="import-stock">
+            <h2>Import Stock</h2>
+            <form id="import-stock-form">
+                <div class="form-group">
+                    <label for="import-date">Date of Entry:</label>
+                    <input type="date" class="form-control" id="import-date" name="import-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="import-shop">Shop Name:</label>
+                    <input type="text" class="form-control" id="import-shop" name="import-shop" required>
+                </div>
+                <div class="form-group">
+                    <label for="import-from">Imported From:</label>
+                    <input type="text" class="form-control" id="import-from" name="import-from" required>
+                </div>
+                <div class="form-group">
+                    <label for="import-items">Items:</label>
+                    <textarea class="form-control" id="import-items" name="import-items" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Import</button>
+            </form>
+        </section>
+
+        <section id="return-stock" class="mt-5">
+            <h2>Return Stock</h2>
+            <form id="return-stock-form">
+                <div class="form-group">
+                    <label for="return-date">Date of Return:</label>
+                    <input type="date" class="form-control" id="return-date" name="return-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="return-shop">Shop Name:</label>
+                    <input type="text" class="form-control" id="return-shop" name="return-shop" required>
+                </div>
+                <div class="form-group">
+                    <label for="return-to">Returned To:</label>
+                    <input type="text" class="form-control" id="return-to" name="return-to" required>
+                </div>
+                <div class="form-group">
+                    <label for="return-items">Items:</label>
+                    <textarea class="form-control" id="return-items" name="return-items" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Return</button>
+            </form>
+        </section>
+
+        <section id="stock-summary" class="mt-5">
+            <h2>Stock Summary</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Shop Name</th>
+                        <th>Type</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="stock-summary-body">
+                    <!-- Rows will be added dynamically here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script1.js"></script>
+</body>
+</html>

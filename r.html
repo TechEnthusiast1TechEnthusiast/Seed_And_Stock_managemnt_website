@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Stock Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .crop-section {
+            margin-bottom: 40px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .register-header {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .register-header div {
+            flex: 1;
+            min-width: 200px;
+        }
+        .register-header input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .register-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .register-table th, .register-table td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px;
+        }
+        .register-table th {
+            background-color: #f2f2f2;
+        }
+        .register-table input {
+            width: 100%;
+            border: none;
+            text-align: center;
+        }
+        .add-row-button, .add-crop-button, .save-button {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .add-row-button button, .add-crop-button button, .save-button button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .add-row-button button:hover, .add-crop-button button:hover, .save-button button:hover {
+            background-color: #45a049;
+        }
+        .button-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Seed Stock Register</h1>
+        <div id="cropSections"></div>
+        <div class="button-section">
+            <button onclick="addCrop()">Add Crop</button>
+            <button onclick="saveAllCrops()">Save All</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script>
+        let wb = XLSX.utils.book_new(); // Workbook object to store all sheets
+
+        function addCrop() {
+            const cropSections = document.getElementById('cropSections');
+            const cropSection = document.createElement('div');
+            cropSection.classList.add('crop-section');
+
+            const header = `
+                <div class="register-header">
+                    <div>Name of the Crop: <input type="text" class="cropName"></div>
+                    <div>Number of the Variety: <input type="text" class="varietyNumber"></div>
+                    <div>Name of the Supplier (Producer): <input type="text" class="supplierName"></div>
+                    <div>Date of Procurement (Received): <input type="date" class="procurementDate"></div>
+                </div>
+                <div class="add-row-button">
+                    <button onclick="addRow(this)">Add Row</button>
+                </div>
+                <div class="save-button" style="display: none;">
+                    <button onclick="saveCurrentCrop(this)">Save</button>
+                </div>
+                <table class="register-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Date</th>
+                            <th>Lot Number</th>
+                            <th>Receipts</th>
+                            <th>Number of Bags</th>
+                            <th>Opening Balance</th>
+                            <th>Total1</th>
+                            <th>Sales during the day</th>
+                            <th>Closing Balance</th>
+                            <th>Total2</th>
+                            <th>Signature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="number" min="1"></td>
+                            <td><input type="date"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" min="0" oninput="calculateTotals(this)"></td>
+                            <td><input type="number" min="0" oninput="calculateTotals(this)"></td>
+                            <td><input type="number" min="0" oninput="calculateTotals(this)"></td>
+                            <td><input type="number" min="0" readonly></td>
+                            <td><input type="number" min="0" oninput="calculateTotals(this)"></td>
+                            <td><input type="number" min="0" oninput="calculateTotals(this)"></td>
+                            <td><input type="number" min="0" readonly></td>
+                            <td><input type="text"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            cropSection.innerHTML = header;
+            cropSections.appendChild(cropSection);
+        }
+
+        function addRow(button) {
+            const cropSection = button.closest('.crop-section');
+            const table = cropSection.querySelector('table tbody');
+            const newRow = table.insertRow();
+
+            const cellCount = table.rows[0].cells.length;
+            for (let i = 0; i < cellCount; i++) {
+                const newCell = newRow.insertCell(i);
+                const inputType = i === 1 ? 'date' : i === 0 || i === 3 || i === 4 || i === 5 || i === 7 || i === 8 ? 'number' : 'text';
+                const input = document.createElement('input');
+                input.type = inputType;
+                if (inputType === 'number') {
+                    input.min = "0";
+                    input.oninput = function() { calculateTotals(input); };
+                }
+                if (i === 6 || i === 9) {
+                    input.readOnly = true;
+                }
+                newCell.appendChild(input);
+            }
+
+            // Show the save button
+            const saveButton = cropSection.querySelector('.save-button');
+            saveButton.style.display = 'block';
+        }
+
+        function calculateTotals(input) {
+            const row = input.closest('tr');
+            const receipts = parseFloat(row.cells[3].querySelector('input').value) || 0;
+            const numberOfBags = parseFloat(row.cells[4].querySelector('input').value) || 0;
+            const openingBalance = parseFloat(row.cells[5].querySelector('input').value) || 0;
+            const salesDuringDay = parseFloat(row.cells[7].querySelector('input').value) || 0;
+            const closingBalance = parseFloat(row.cells[8].querySelector('input').value) || 0;
+
+            const total1 = numberOfBags + openingBalance;
+            row.cells[6].querySelector('input').value = total1;
+
+            const total2 = total1 - salesDuringDay - closingBalance;
+            row.cells[9].querySelector('input').value = total2;
+        }
+
+        function saveCurrentCrop(button) {
+            const cropSection = button.closest('.crop-section');
+
+            const cropName = cropSection.querySelector('.cropName').value;
+            const varietyNumber = cropSection.querySelector('.varietyNumber').value;
+            const supplierName = cropSection.querySelector('.supplierName').value;
+            const procurementDate = cropSection.querySelector('.procurementDate').value;
+
+            const table = cropSection.querySelector('table');
+            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
+            const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+                return Array.from(tr.querySelectorAll('input')).map(input => input.value);
+            });
+
+            const ws_data = [
+                ['Crop Information'],
+                ['Name of the Crop', cropName],
+                ['Number of the Variety', varietyNumber],
+                ['Name of the Supplier (Producer)', supplierName],
+                ['Date of Procurement (Received)', procurementDate],
+                [],
+                headers,
+                ...rows
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            XLSX.utils.book_append_sheet(wb, ws, cropName); // Append sheet to existing workbook
+
+            XLSX.writeFile(wb, 'Seed_Stock_Register.xlsx');
+            
+            // Hide the save button after saving
+            const saveButton = cropSection.querySelector('.save-button');
+            saveButton.style.display = 'none';
+        }
+
+        function saveAllCrops() {
+            const cropSections = document.querySelectorAll('.crop-section');
+
+            cropSections.forEach((cropSection, index) => {
+                const cropName = cropSection.querySelector('.cropName').value;
+                const varietyNumber = cropSection.querySelector('.varietyNumber').value;
+                const supplierName = cropSection.querySelector('.supplierName').value;
+                const procurementDate = cropSection.querySelector('.procurementDate').value;
+
+                const table = cropSection.querySelector('table');
+                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
+                const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+                    return Array.from(tr.querySelectorAll('input')).map(input => input.value);
+                });
+
+                const ws_data = [
+                    ['Crop Information'],
+                    ['Name of the Crop', cropName],
+                    ['Number of the Variety', varietyNumber],
+                    ['Name of the Supplier (Producer)', supplierName],
+                    ['Date of Procurement (Received)', procurementDate],
+                    [],
+                    headers,
+                    ...rows
+                ];
+
+                const ws = XLSX.utils.aoa_to_sheet(ws_data);
+                XLSX.utils.book_append_sheet(wb, ws, cropName); // Append sheet to existing workbook
+            });
+
+            XLSX.writeFile(wb, 'Seed_Stock_Register.xlsx');
+        }
+    </script>
+</body>
+</html>
